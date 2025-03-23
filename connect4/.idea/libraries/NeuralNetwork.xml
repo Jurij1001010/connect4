@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="NeuralNetwork">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../NeuralNetwork" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../NeuralNetwork/src" />
+    </SOURCES>
+  </library>
+</component>
