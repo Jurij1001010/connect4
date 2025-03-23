@@ -2,13 +2,15 @@ package Neural_Network;
 
 import java.util.Random;
 
-public class Neuron {
+public class Neuron extends Functions{
 
 
     public double neuron_value; // value of neuron
+    public double neuron_value_a;
     public int neuron_next_number; // how many weights
     public double[] weights;
     public double bias;
+
     public double delta;
 
 
@@ -39,5 +41,6 @@ public class Neuron {
 
     public void setNeuron_value(double neuron_value) {
         this.neuron_value = neuron_value;
+        this.neuron_value_a = neuron_value;
     }
 }

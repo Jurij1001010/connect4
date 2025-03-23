@@ -26,17 +26,8 @@ public class Network extends Functions implements Cloneable, Serializable {
         this.output_neurons_number = neurons_numbers[layer_number-1];
         this.neurons_numbers = neurons_numbers;
 
-
         layers = new Layer[2+hidden_layers_number];
         makeLayers();
-        /*
-        for(Layer lay : layers){
-            System.out.print(lay.neuronNumber+"-"+lay.neuronNextNumber+"  ");
-
-        }
-        System.out.println();
-
-         */
         input_layer = layers[0];
         output_layer = layers[layers.length-1];
 
@@ -55,70 +46,60 @@ public class Network extends Functions implements Cloneable, Serializable {
             layers[i].neurons = n.layers[i].neurons.clone();
         }
     }
-
     public void makeLayers(){
         //if there is 0 hidden layers we only need to set up input and output layers
-        //else we make n-hidden layers with m-neurons
 
         layers[0] = new Layer(new Neuron[input_neurons_number], neurons_numbers[1]);
         for (int i = 0; i< hidden_layers_number; i++){
             layers[i+1] = new Layer(layers[i].neurons_next, neurons_numbers[i+2]);
         }
-        layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, 0); //set up output layer --> always has 0 next layers
+        layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, layers[layer_number-2].neurons_next.length); //set up output layer --> next neurons for correct values
 
     }
 
+    public double[] feedNetwork(double[] input_neuron_values){
+        input_layer.setNeurons(input_neuron_values);
 
-
-    public void learn(double[] input_neuron_values, double[] correct_neuron_values){
-        if (input_neurons_number != input_neuron_values.length){
-            System.out.println("Invalid input of arguments!");
-        }else{
-            //forward-propagation
-            input_layer.setNeurons(input_neuron_values);
-
-            for (Layer layer : layers) {
-                layer.calculateNextNeurons();
-            }
-
-            //back-propagation
-            calculateError(ReLUFunction(layers[layer_number-1].getNeuron_values()), correct_neuron_values);
-
-
-
-            calculateNewWeights(correct_neuron_values);
+        for (Layer layer : layers) {
+            if(layer==output_layer)break;
+            layer.calculateNextNeurons();
+            layer.passNeuronsTroughReLUFunction();
         }
-    }
-
-    public double[] test(double[] input_neuron_values){
-        if (input_neurons_number != input_neuron_values.length){
-            System.out.println("Invalid input of arguments!");
-            return new double[] {};
-        }else{
-            //forward-propagation
-            input_layer.setNeurons(input_neuron_values);
-
-            for (Layer layer : layers) {
-                layer.calculateNextNeurons();
-            }
-
-
-            return layers[layer_number-1].getNeuron_values();
-        }
+        output_layer.passNeuronsTroughSoftMaxFunction();
+        return output_layer.getNeuron_values();
     }
 
 
+    public void learnNetwork(double[] input_neuron_values, double[] correct_neuron_values){
+
+        //forward-propagation
+        feedNetwork(input_neuron_values);
+
+        output_layer.setNextNeurons(correct_neuron_values);//overrides calculated next_neurons in last layer for later calculating error
+
+        //back-propagation
+        //calculateError(ReLUFunction(layers[layer_number-1].getNeuron_values()), correct_neuron_values);
 
 
-    public void calculateNewWeights(double[] correct_neuron_values){
 
-        output_layer.setNeuronDeltas(output_layer.getCost(correct_neuron_values));
+        calculateNewWeights();
+
+    }
+
+
+    public void calculateNewWeights(){
+
+        Cost cost = new Cost(output_layer.getNeuron_values(), output_layer.getNeuron_next_values());
+
+        output_layer.setNeuronDeltas(cost.getDeltasOutputLayer());
 
         for(int i = layers.length-2; i >= 0; i--){
+
             Neuron[] neurons = layers[i].neurons;
             Neuron[] neurons_next = layers[i].neurons_next;
 
-            layers[i].setNeuronDeltas(layers[i].getCostHiddenLayer());
+            layers[i].setNeuronDeltas(layers[i].getLosses());
+
 
             //double[][] neuronWeights = layers[i].weights;
 
@@ -146,45 +127,6 @@ public class Network extends Functions implements Cloneable, Serializable {
 
     }
 
-    /*
-    public void calculateNewBiases(int i){
-
-        double[] neuronBiases = layers[i].biases;
-        double[] neuronNextValues = layers[i].neuron_next_values;
-        double[] neuronNextDeltas = layers[i+1].neuron_deltas;
-
-        //double[][] newWeights = {};
-
-        for(int j = 0; j < neuronNextValues.length-1; j++){
-            neuronBiases[j] -= learn_rate * neuronNextDeltas[j];
-
-        }
-        layers[i].setBiases(neuronBiases);
-        //Library.print1DoubleArray(layers[i].biases);
-    }
-
-     */
-
-
-
-
-    public double calculateError(double[] output, double[] correct_output){
-        double error = 0;
-        for (int i = 0; i < output.length; i++){
-            error += correct_output[i]-output[i];
-
-        }
-        //errors = Library.addDouble(errors, error);
-        return error / output.length;
-    }
-    public double calculateSumError(){
-        double errorSum = 0;
-        for(double error : errors){
-            errorSum += error;
-        }
-        return  errorSum/errors.length;
-
-    }
 
     public void setLearn_rate(double learn_rate) {
         this.learn_rate = learn_rate;

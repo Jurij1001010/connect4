@@ -3,8 +3,6 @@ package AI;
 import Connect_Four.Board;
 import Neural_Network.Network;
 
-import java.util.Arrays;
-
 
 public class Player {
     public Network n = new Network(new int[] {42, 42, 42, 21, 7});
@@ -36,7 +34,7 @@ public class Player {
 
 
 
-        history_results[pos_count] = n.test(board.makeInput(m)).clone();//gets the network output
+        history_results[pos_count] = n.feedNetwork(board.makeInput(m)).clone();//gets the network output
         int col_to_place_0 = biggestValue(history_results[pos_count]);//position of placement
 
         //System.out.println("player "+place+": "+ Arrays.toString(history_board[pos_count]));
@@ -69,7 +67,7 @@ public class Player {
         for (int i = 0; i <= pos_count; i++) {
             double[] output = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
             output[biggestValue(history_results[i])] = 1;
-            n.learn(history_board[i], output);
+            n.learnNetwork(history_board[i], output);
         }
     }
 
