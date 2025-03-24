@@ -2,18 +2,19 @@ package Neural_Network;
 
 import java.util.Random;
 
-public class Neuron extends Functions{
+public class Neuron{
 
 
     public double neuron_value; // value of neuron
-    public double neuron_value_a;
+    public double neuron_value_a; // value of activated neuron
     public int neuron_next_number; // how many weights
     public double[] weights;
     public double bias;
 
-    public double delta;
+    public double delta = 1;
 
 
+    //for generating new weights and biases
     private final Random rand = new Random();
     private int weight_limit = 2;
     private int bias_limit = 1;
@@ -39,8 +40,8 @@ public class Neuron extends Functions{
         bias = -bias_limit + (bias_limit + bias_limit) * rand.nextDouble();
     }
 
-    public void setNeuron_value(double neuron_value) {
+    public void setNeuron_value(double neuron_value, double neuron_value_a) {
         this.neuron_value = neuron_value;
-        this.neuron_value_a = neuron_value;
+        this.neuron_value_a = neuron_value_a;
     }
 }

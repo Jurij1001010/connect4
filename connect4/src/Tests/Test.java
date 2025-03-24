@@ -11,16 +11,24 @@ public class Test {
     public static void main(String[] args) {
         Network n = new Network(new int[]{2, 2});
 
-        n.setLearn_rate(0.7);
+        n.setLearn_rate(0.1);
 
+        /*
         n.layers[0].neurons[0].weights = new double[]{0.5, 0.2};
         n.layers[0].neurons[1].weights = new double[]{0.5, 0.2};
         n.layers[1].neurons[0].bias = 1.83;
         n.layers[1].neurons[1].bias = 1.83;
 
+         */
+        n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
         n.feedNetwork(new double[]{0.1, 0.3});
         printNeurons(n);
+        for (int i = 0; i < 10; i++) {
 
+            n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
+        }
+        n.feedNetwork(new double[]{0.1, 0.3});
+        printNeurons(n);
 
 
 
@@ -100,14 +108,19 @@ public class Test {
     public static void printNeurons(Network n){
         for(Layer l : n.layers) {
             for (Neuron ne : l.neurons) {
+                System.out.print(ne.neuron_value_a+"  ");
+                /*
                 System.out.print(ne.neuron_value + " d:("+ne.delta+")"+" w:(");
                 for(double d : ne.weights){
                     System.out.print(d+"-");
                 }
                 System.out.print(")  ");
+
+                 */
             }
             System.out.println("");
         }
+        System.out.println(n.cost_of_previous_feed);
         System.out.println("");
 
 
