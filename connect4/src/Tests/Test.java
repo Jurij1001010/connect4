@@ -9,9 +9,9 @@ import java.util.*;
 public class Test {
 
     public static void main(String[] args) {
-        Network n = new Network(new int[]{2, 2});
+        Network n = new Network(new int[]{2, 3, 3, 2});
 
-        n.setLearn_rate(0.1);
+        n.setLearn_rate(0.2);
 
         /*
         n.layers[0].neurons[0].weights = new double[]{0.5, 0.2};
@@ -23,7 +23,7 @@ public class Test {
         n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
         n.feedNetwork(new double[]{0.1, 0.3});
         printNeurons(n);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10000; i++) {
 
             n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
         }
@@ -120,7 +120,7 @@ public class Test {
             }
             System.out.println("");
         }
-        System.out.println(n.cost_of_previous_feed);
+        System.out.println("cost: "+n.cost_of_previous_feed);
         System.out.println("");
 
 

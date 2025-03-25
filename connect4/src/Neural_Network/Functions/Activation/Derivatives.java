@@ -13,7 +13,11 @@ public class Derivatives {
 
         @Override
         public double[] execute(double[] input) {
-            return new double[0];
+            double[] output = new double[input.length];
+            for (int i = 0; i < input.length; i++) {
+                output[i] = tanHDerivative.execute(input[i]);
+            }
+            return output;
         }
     };
 
@@ -26,7 +30,11 @@ public class Derivatives {
 
         @Override
         public double[] execute(double[] input) {
-            return new double[0];
+            double[] output = new double[input.length];
+            for (int i = 0; i < input.length; i++) {
+                output[i] = sigmoidDerivative.execute(input[i]);
+            }
+            return output;
         }
     };
 

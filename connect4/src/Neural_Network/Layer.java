@@ -13,8 +13,8 @@ public class Layer implements Serializable{
     public Function activationFunction;
     public Derivative activationDerivative;
 
-    public Neural_Network.Functions.Cost.Function costFunction;
-    public Neural_Network.Functions.Cost.Derivative costDerivative;
+    private Neural_Network.Functions.Cost.Function costFunction;
+    private Neural_Network.Functions.Cost.Derivative costDerivative;
 
     public Neuron[] neurons;
     public Neuron[] neurons_next;
@@ -113,5 +113,14 @@ public class Layer implements Serializable{
             neuron_values_a[i] = neurons[i].neuron_value_a;
         }
         return neuron_values_a;
+    }
+
+    public void setActivation(Function function, Derivative derivative){
+        activationFunction = function;
+        activationDerivative = derivative;
+    }
+    public void setCost(Neural_Network.Functions.Cost.Function function, Neural_Network.Functions.Cost.Derivative derivative){
+        costFunction = function;
+        costDerivative = derivative;
     }
 }

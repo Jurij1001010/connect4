@@ -14,7 +14,11 @@ public class Functions {
 
         @Override
         public double[] execute(double[] input) {
-            return new double[0];
+            double[] output = new double[input.length];
+            for (int i = 0; i < input.length; i++) {
+                output[i] = tanHFunction.execute(input[i]);
+            }
+            return output;
         }
     };
 
@@ -27,7 +31,11 @@ public class Functions {
 
         @Override
         public double[] execute(double[] input) {
-            return new double[0];
+            double[] output = new double[input.length];
+            for (int i = 0; i < input.length; i++) {
+                output[i] = sigmoidFunction.execute(input[i]);
+            }
+            return output;
         }
     };
 

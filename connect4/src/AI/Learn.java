@@ -46,7 +46,7 @@ public class Learn extends Thread{
 
             stats.update();
 
-            learn =false;
+            //learn =false;
             board = game.board;
         }
     }

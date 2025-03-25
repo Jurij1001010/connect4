@@ -3,9 +3,11 @@ package AI;
 import Connect_Four.Board;
 import Neural_Network.Network;
 
+import java.util.Arrays;
+
 
 public class Player {
-    public Network n = new Network(new int[] {42, 42, 42, 21, 7});
+    public Network n = new Network(new int[] {42, 42, 42, 42, 7});
     public double[][] history_results;//all decisions where to put coin
     public double[][] history_board;//list of all board info's (positions os coins)
     public int place;
@@ -37,25 +39,18 @@ public class Player {
         history_results[pos_count] = n.feedNetwork(board.makeInput(m)).clone();//gets the network output
         int col_to_place_0 = biggestValue(history_results[pos_count]);//position of placement
 
-        //System.out.println("player "+place+": "+ Arrays.toString(history_board[pos_count]));
-        //System.out.println("           "+Arrays.toString(history_results[pos_count])+" "+col_to_place_0);
-        /*
-        if(placed_to_filled_col>3){
-            col_to_place_0= (int) (Math.random() * 7);
-        }*/
         board.makeMove(col_to_place_0);
+        if(place == 1) System.out.println(Arrays.toString(history_results[pos_count]));
 
         //if player cant place in col the game ends and learns he cant place to that col
 
         if (board.cant_place) {
             //if(place==1) System.out.println("c");
-            /*if (!reset) {
+            if (!reset) {
                 history_results[pos_count][col_to_place_0] = 0.0;
-                n.learn(history_board[pos_count], history_results[pos_count]);//learns that cant place to filled column
+                n.learnNetwork(history_board[pos_count], history_results[pos_count]);//learns that cant place to filled column
                 //System.out.println(Arrays.toString());
             }
-
-             */
 
             tried_to_place_to_filled_col = true;
 
@@ -64,6 +59,7 @@ public class Player {
     }
 
     public void learn(double[][] history_results, double[][] history_board, int pos_count){
+        System.out.println("leraning");
         for (int i = 0; i <= pos_count; i++) {
             double[] output = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
             output[biggestValue(history_results[i])] = 1;
@@ -79,9 +75,9 @@ public class Player {
     }
 
     /*
-    //position where to place a coin
-    //
-    //
+     *position where to place a coin
+     *
+     *
      */
     public static int biggestValue (double[] values){
         double max_ = values[0];

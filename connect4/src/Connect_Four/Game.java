@@ -4,7 +4,7 @@ import AI.Player;
 
 
 public class Game {
-    public boolean randomOrder = true;//random start first or player 1 always first
+    public boolean randomOrder = false;//random start first or player 1 always first
     public int pos_count = -1;
     public Player[] players = new Player[2];
     public Board board = new Board();

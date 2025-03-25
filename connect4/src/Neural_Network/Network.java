@@ -20,10 +20,8 @@ public class Network implements Cloneable, Serializable {
     public Layer[] layers;
     private double learn_rate = 0.1;
 
-    Function activationFunction = Functions.ReLUFunction;
-    Derivative activationDerivative = Derivatives.ReLUDerivative;
-    Neural_Network.Functions.Cost.Function costFunction = Neural_Network.Functions.Cost.Functions.cceFunction;
-    Neural_Network.Functions.Cost.Derivative costDerivative = Neural_Network.Functions.Cost.Derivatives.ccaDerivative;
+
+    Neural_Network.Functions.Functions functions;
 
     public double cost_of_previous_feed;
     public Network(int[] neurons_numbers){
@@ -32,6 +30,9 @@ public class Network implements Cloneable, Serializable {
         this.hidden_layers_number = layer_number-2;
         this.output_neurons_number = neurons_numbers[layer_number-1];
         this.neurons_numbers = neurons_numbers;
+
+        functions = new Neural_Network.Functions.Functions(Functions.sigmoidFunction, Neural_Network.Functions.Cost.Functions.cceFunction);
+        functions.setActivationO(Functions.softMaxFunction);
 
         layers = new Layer[2+hidden_layers_number];
         makeLayers();
@@ -60,18 +61,14 @@ public class Network implements Cloneable, Serializable {
         //if there is 0 hidden layers we only need to set up input and output layers
 
         layers[0] = new Layer(new Neuron[input_neurons_number], neurons_numbers[1]);
-        layers[0].activationFunction = activationFunction;
-        layers[0].activationDerivative = activationDerivative;
+        layers[0].setActivation(functions.activationFunction, functions.activationDerivative);
         for (int i = 0; i< hidden_layers_number; i++){
             layers[i+1] = new Layer(layers[i].neurons_next, neurons_numbers[i+2]);
-            layers[i+1].activationFunction = activationFunction;
-            layers[i+1].activationDerivative = activationDerivative;
+            layers[i+1].setActivation(functions.activationFunction, functions.activationDerivative);
         }
         layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, layers[layer_number-2].neurons_next.length); //set up output layer --> next neurons for correct values
-        layers[layer_number-1].activationFunction = Functions.softMaxFunction;
-        layers[layer_number-1].activationDerivative = Derivatives.softMaxDerivative;
-        layers[layer_number-1].costFunction = costFunction;
-        layers[layer_number-1].costDerivative = costDerivative;
+        layers[layer_number-1].setActivation(functions.activationFunctionO, functions.activationDerivativeO);
+        layers[layer_number-1].setCost(functions.costFunction, functions.costDerivative);
     }
 
     public double[] feedNetwork(double[] input_neuron_values){
