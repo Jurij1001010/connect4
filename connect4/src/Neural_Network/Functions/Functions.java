@@ -18,26 +18,43 @@ public class Functions {
     public Neural_Network.Functions.Cost.Derivative costDerivative;
 
     public Functions(Function activationFunction, Neural_Network.Functions.Cost.Function costFunction){
+        //System.out.println("Which activate function is this?"+(activationFunction== Neural_Network.Functions.Activation.Functions.ReLUFunction)+" "+Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.ReLUFunction));
         if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.ReLUFunction)){
             this.activationFunction = activationFunction;
             this.activationDerivative = Derivatives.ReLUDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.sigmoidFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.sigmoidFunction)){
             this.activationFunction = activationFunction;
             this.activationDerivative = Derivatives.sigmoidDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.tanHFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.tanHFunction)){
             this.activationFunction = activationFunction;
             this.activationDerivative = Derivatives.tanHDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.softMaxFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.softMaxFunction)){
             this.activationFunction = activationFunction;
             this.activationDerivative = Derivatives.softMaxDerivative;
         }
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.logSoftMaxFunction)){
+            this.activationFunction = activationFunction;
+            System.out.println("no derivative for logSoftMax!!");
+            this.activationDerivative = Derivatives.softMaxDerivative;
+        }else {
+            System.out.println("Which activate function is this?"+(activationFunction== Neural_Network.Functions.Activation.Functions.ReLUFunction));
+        }
+
 
         if(Objects.equals(costFunction, Neural_Network.Functions.Cost.Functions.cceFunction)){
             this.costFunction = costFunction;
             this.costDerivative = Neural_Network.Functions.Cost.Derivatives.ccaDerivative;
+        }
+        else if(Objects.equals(costFunction, Neural_Network.Functions.Cost.Functions.mseFunction)){
+            this.costFunction = Neural_Network.Functions.Cost.Functions.mseFunction;
+            this.costDerivative = Neural_Network.Functions.Cost.Derivatives.mseDerivative;
+        }
+
+        else{
+            System.out.println("Which cost function is this?");
         }
     }
 
@@ -46,17 +63,24 @@ public class Functions {
             this.activationFunctionO = activationFunction;
             this.activationDerivativeO = Derivatives.ReLUDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.sigmoidFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.sigmoidFunction)){
             this.activationFunctionO = activationFunction;
             this.activationDerivativeO = Derivatives.sigmoidDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.tanHFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.tanHFunction)){
             this.activationFunctionO = activationFunction;
             this.activationDerivativeO = Derivatives.tanHDerivative;
         }
-        if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.softMaxFunction)){
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.softMaxFunction)){
             this.activationFunctionO = activationFunction;
             this.activationDerivativeO = Derivatives.softMaxDerivative;
+        }
+        else if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.logSoftMaxFunction)){
+            this.activationFunctionO = activationFunction;
+            System.out.println("no derivative for logSoftMax!!");
+            this.activationDerivativeO = Derivatives.softMaxDerivative;
+        }else{
+            System.out.println("Which activate function is this?");
         }
     }
 }

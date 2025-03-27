@@ -19,4 +19,22 @@ public class Derivatives {
         }
     };
 
+    //mean squared error
+    public static Derivative mseDerivative = new Derivative() {
+        @Override
+        public double execute(double neuron_value, double expected_value) {
+            return -2*(expected_value-neuron_value);
+        }
+
+        @Override
+        public double[] execute(double[] neuron_values, double[] expected_values) {
+            double[] output = new double[neuron_values.length];
+            for (int i = 0; i < neuron_values.length; i++) {
+                output[i] = mseDerivative.execute(neuron_values[i], expected_values[i]);
+            }
+            return output;
+        }
+    };
+
+
 }

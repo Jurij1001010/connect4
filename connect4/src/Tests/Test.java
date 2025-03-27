@@ -1,6 +1,7 @@
 package Tests;
 
 
+import Neural_Network.Functions.Cost.Functions;
 import Neural_Network.Layer;
 import Neural_Network.Network;
 import Neural_Network.Neuron;
@@ -9,7 +10,7 @@ import java.util.*;
 public class Test {
 
     public static void main(String[] args) {
-        Network n = new Network(new int[]{2, 3, 3, 2});
+        Network n = new Network(new int[]{2,  2});
 
         n.setLearn_rate(0.2);
 
@@ -23,14 +24,14 @@ public class Test {
         n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
         n.feedNetwork(new double[]{0.1, 0.3});
         printNeurons(n);
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
         }
         n.feedNetwork(new double[]{0.1, 0.3});
         printNeurons(n);
 
-
+        //System.out.println(Functions.mseFunction.execute(new double[]));
 
         /*
         Network n = new Network(new int[]{2, 2, 1});

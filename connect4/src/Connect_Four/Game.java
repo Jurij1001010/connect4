@@ -2,6 +2,8 @@ package Connect_Four;
 
 import AI.Player;
 
+import java.util.Arrays;
+
 
 public class Game {
     public boolean randomOrder = false;//random start first or player 1 always first

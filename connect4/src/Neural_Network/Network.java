@@ -20,10 +20,10 @@ public class Network implements Cloneable, Serializable {
     public Layer[] layers;
     private double learn_rate = 0.1;
 
-
     Neural_Network.Functions.Functions functions;
 
     public double cost_of_previous_feed;
+
     public Network(int[] neurons_numbers){
         this.layer_number = neurons_numbers.length;
         this.input_neurons_number = neurons_numbers[0];
@@ -36,12 +36,6 @@ public class Network implements Cloneable, Serializable {
 
         layers = new Layer[2+hidden_layers_number];
         makeLayers();
-
-        input_layer = layers[0];
-        output_layer = layers[layers.length-1];
-
-        output_layer.last_layer = true;
-
     }
 
     public void resetLayers(){
@@ -60,15 +54,14 @@ public class Network implements Cloneable, Serializable {
     public void makeLayers(){
         //if there is 0 hidden layers we only need to set up input and output layers
 
-        layers[0] = new Layer(new Neuron[input_neurons_number], neurons_numbers[1]);
-        layers[0].setActivation(functions.activationFunction, functions.activationDerivative);
+        layers[0] = new Layer(new Neuron[input_neurons_number], neurons_numbers[1], functions);
         for (int i = 0; i< hidden_layers_number; i++){
-            layers[i+1] = new Layer(layers[i].neurons_next, neurons_numbers[i+2]);
-            layers[i+1].setActivation(functions.activationFunction, functions.activationDerivative);
+            layers[i+1] = new Layer(layers[i].neurons_next, neurons_numbers[i+2], functions);
         }
-        layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, layers[layer_number-2].neurons_next.length); //set up output layer --> next neurons for correct values
-        layers[layer_number-1].setActivation(functions.activationFunctionO, functions.activationDerivativeO);
-        layers[layer_number-1].setCost(functions.costFunction, functions.costDerivative);
+        layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, 0, functions); //set up output layer
+
+        input_layer = layers[0];
+        output_layer = layers[layers.length-1];
     }
 
     public double[] feedNetwork(double[] input_neuron_values){
@@ -90,9 +83,9 @@ public class Network implements Cloneable, Serializable {
         output_layer.setNextNeurons(correct_neuron_values);//set last neurons as correct values
         cost_of_previous_feed = output_layer.calculateCost(correct_neuron_values);
         //back-propagation
-        for(Layer layer:layers){
-            layer.calculateDeltas();
-            if(layer!=output_layer)layer.calculateWeightsBiases(learn_rate);
+        for (int i = layer_number-1; i >= 0; i--){
+            layers[i].calculateDeltas();
+            if(layers[i]!=output_layer)layers[i].calculateWeightsBiases(learn_rate);
         }
     }
 

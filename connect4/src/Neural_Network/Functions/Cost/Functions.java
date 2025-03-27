@@ -16,5 +16,17 @@ public class Functions {
         }
     };
 
+    //mean squared error
+    public static Function mseFunction = new Function() {
+    @Override
+    public double execute(double[] neuron_values, double[] expected_values) {
+        double cost = 0;
+        for(int i = 0; i < neuron_values.length; i++){
+            cost += Math.pow(expected_values[i]-neuron_values[i], 2);
+        }
+        return cost / neuron_values.length;
+    }
+    };
+
 
 }
