@@ -9,7 +9,16 @@ public class Functions {
     public static Function tanHFunction = new Function() {
         @Override
         public double execute(double input) {
-            return (Math.exp(input)-Math.exp(-input))/(Math.exp(input)+Math.exp(-input));
+            double x_plus = Math.exp(input);
+            double x_minus = Math.exp(-input);
+
+            double p1= (x_plus-x_minus);
+            double p2 = (x_plus+x_minus);
+            double output =p1/p2;
+            if(Double.isNaN(output)){
+                System.out.println("tanH function NaN");
+            }
+            return output;
         }
 
         @Override
@@ -23,7 +32,11 @@ public class Functions {
     public static Function sigmoidFunction = new Function() {
         @Override
         public double execute(double input) {
-            return 1/(1+Math.exp(-input));
+            double output = 1/(1+Math.exp(-input));
+            if(Double.isNaN(output)){
+                System.out.println("sigmoid function NaN");
+            }
+            return output;
         }
 
         @Override
@@ -44,8 +57,13 @@ public class Functions {
         @Override
         public double execute(double value, double[] values) {
             double total = Arrays.stream(values).map(Math::exp).sum();
+            double output = Math.exp(value)/total;
 
-            return Math.exp(value)/total;
+            if(output<0||Double.isNaN(output)){
+                System.out.println("soft max function NaN");
+            }
+
+            return output;
         }
     };
 
@@ -60,8 +78,11 @@ public class Functions {
         @Override
         public double execute(double value, double[] values) {
             double total = Arrays.stream(values).map(Math::exp).sum();
-
-            return Math.log(Math.exp(value)/total);
+            double output = Math.log(Math.exp(value)/total);
+            if(Double.isNaN(output)){
+                System.out.println("sigmoid function NaN");
+            }
+            return output;
         }
     };
 

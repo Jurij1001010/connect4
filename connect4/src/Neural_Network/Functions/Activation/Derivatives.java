@@ -8,7 +8,11 @@ public class Derivatives {
     public static Derivative tanHDerivative = new Derivative() {
         @Override
         public double execute(double input) {
-            return 1-Math.pow((Math.exp(input)-Math.exp(-input))/(Math.exp(input)+Math.exp(-input)), 2);
+            double output =1-Math.pow((Math.exp(input)-Math.exp(-input))/(Math.exp(input)+Math.exp(-input)), 2);
+            if(Double.isNaN(output)){
+                System.out.println("tanH derivative NaN");
+            }
+            return output;
         }
 
         @Override
@@ -22,7 +26,13 @@ public class Derivatives {
         @Override
         public double execute(double input) {
             double fx = 1/(1+Math.exp(-input));
-            return fx*(1-fx);
+            double output = fx*(1-fx);
+
+            if(Double.isNaN(output)){
+                System.out.println("sigmoid derivative NaN");
+            }
+
+            return output;
         }
 
         @Override
@@ -44,7 +54,14 @@ public class Derivatives {
 
             double fx = softMaxFunction.execute(value, values);
 
-            return  fx*(1-fx);
+            double output = fx*(1-fx);
+
+            if(Double.isNaN(output)){
+                System.out.println("softmax derivative NaN");
+            }
+
+
+            return  output;
         }
     };
 

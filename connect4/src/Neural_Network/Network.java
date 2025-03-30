@@ -1,8 +1,5 @@
 package Neural_Network;
 
-import Neural_Network.Functions.Activation.Derivative;
-import Neural_Network.Functions.Activation.Derivatives;
-import Neural_Network.Functions.Activation.Function;
 import Neural_Network.Functions.Activation.Functions;
 
 import java.io.Serializable;
@@ -31,7 +28,7 @@ public class Network implements Cloneable, Serializable {
         this.output_neurons_number = neurons_numbers[layer_number-1];
         this.neurons_numbers = neurons_numbers;
 
-        functions = new Neural_Network.Functions.Functions(Functions.sigmoidFunction, Neural_Network.Functions.Cost.Functions.cceFunction);
+        functions = new Neural_Network.Functions.Functions(Functions.tanHFunction, Neural_Network.Functions.Cost.Functions.cceFunction);
         functions.setActivationO(Functions.softMaxFunction);
 
         layers = new Layer[2+hidden_layers_number];
@@ -71,7 +68,7 @@ public class Network implements Cloneable, Serializable {
             if(layer==output_layer)break;
             layer.calculateNextNeurons();
         }
-        return output_layer.getNeuron_values_a();
+        return output_layer.getNeuron_values_output();
     }
 
 
