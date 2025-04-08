@@ -1,13 +1,14 @@
 package AI;
 
 import Connect_Four.Board;
+import Neural_Network.Functions.Functions;
 import Neural_Network.Network;
 
 import java.util.Arrays;
 
 
 public class Player {
-    public Network n = new Network(new int[] {42, 63, 63, 21, 7});
+    public Network n = new Network(new int[] {42, 63, 63, 21, 7}, new Functions());
     public double[][] history_results;//all decisions where to put coin
     public double[][] history_board;//list of all board info's (positions os coins)
     public int place;

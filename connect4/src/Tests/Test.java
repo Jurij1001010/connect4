@@ -1,6 +1,7 @@
 package Tests;
 
 
+import Neural_Network.Functions.Functions;
 import Neural_Network.Layer;
 import Neural_Network.Network;
 import Neural_Network.Neuron;
@@ -8,9 +9,9 @@ import Neural_Network.Neuron;
 public class Test {
 
     public static void main(String[] args) {
-        Network n = new Network(new int[]{2, 3, 2});
+        Network n = new Network(new int[]{2, 8,8,8,8,8, 2}, new Functions());
 
-        n.setLearn_rate(0.2);
+        n.setLearn_rate(0.5);
 
         /*
         n.layers[0].neurons[0].weights = new double[]{0.5, 0.2};
@@ -19,15 +20,17 @@ public class Test {
         n.layers[1].neurons[1].bias = 1.83;
 
          */
-        n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
-        n.feedNetwork(new double[]{0.1, 0.3});
-        printNeurons(n);
-        for (int i = 0; i < 100; i++) {
+        double n1 = 234;
+        double n2 = 2454;
+        n.learnNetwork(new double[] {n1, n2}, new double[]{0, 1});
+        n.feedNetwork(new double[]{n1, n2});
+        //printNeurons(n);
+        for (int i = 0; i < 1000; i++) {
 
-            n.learnNetwork(new double[] {0.1, 0.3}, new double[]{0, 1});
+            n.learnNetwork(new double[] {n1, n2}, new double[]{0, 1});
         }
-        n.feedNetwork(new double[]{0.1, 0.3});
-        printNeurons(n);
+        n.feedNetwork(new double[]{n1, n2});
+        //printNeurons(n);
 
         //System.out.println(Functions.mseFunction.execute(new double[]));
 
@@ -102,26 +105,6 @@ public class Test {
         //b.makeMove(1);
         b.printBoard();
         */
-
-    }
-    public static void printNeurons(Network n){
-        for(Layer l : n.layers) {
-            for (Neuron ne : l.neurons) {
-                System.out.print(ne.neuron_value_output +"  ");
-                /*
-                System.out.print(ne.neuron_value + " d:("+ne.delta+")"+" w:(");
-                for(double d : ne.weights){
-                    System.out.print(d+"-");
-                }
-                System.out.print(")  ");
-
-                 */
-            }
-            System.out.println("");
-        }
-        System.out.println("cost: "+n.cost_of_previous_feed);
-        System.out.println("");
-
 
     }
 

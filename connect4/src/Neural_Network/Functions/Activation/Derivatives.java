@@ -6,6 +6,7 @@ import static Neural_Network.Functions.Activation.Functions.*;
 public class Derivatives {
 
     public static Derivative tanHDerivative = new Derivative() {
+        final String name = "tanHDerivative";
         @Override
         public double execute(double input) {
             double output =1-Math.pow((Math.exp(input)-Math.exp(-input))/(Math.exp(input)+Math.exp(-input)), 2);
@@ -23,9 +24,10 @@ public class Derivatives {
     };
 
     public static Derivative sigmoidDerivative = new Derivative() {
+        final String name = "sigmoidDerivative";
         @Override
         public double execute(double input) {
-            double fx = 1/(1+Math.exp(-input));
+            double fx = sigmoidFunction.execute(input);
             double output = fx*(1-fx);
 
             if(Double.isNaN(output)){
@@ -43,6 +45,7 @@ public class Derivatives {
     };
 
     public static Derivative softMaxDerivative = new Derivative() {
+        final String name = "softMaxDerivative";
         @Override
         public double execute(double input) {
             System.out.println("Wrong use of softMax derivative!");
@@ -66,6 +69,7 @@ public class Derivatives {
     };
 
     public static Derivative ReLUDerivative = new Derivative() {
+        final String name = "ReLUDerivative";
         @Override
         public double execute(double input) {
             return (input>0)?1:0;

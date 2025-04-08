@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class Layer implements Serializable{
     boolean last_layer = false;
+
+    public int neuron_before_number;
     public int neuron_number; //how many neurons are in this layer
     public int neuron_next_number; //how many neurons are in next layer if there are 0 it means it is output layer
 
@@ -15,7 +17,8 @@ public class Layer implements Serializable{
     public Neuron[] neurons_next;
 
 
-    public Layer(Neuron[] neurons, int neuron_next_number, Functions functions){
+    public Layer(int neuron_before_number, Neuron[] neurons, int neuron_next_number, Functions functions){
+        this.neuron_before_number = neuron_before_number;
         this.neuron_number = neurons.length;
         this.neurons = neurons;
         this.functions = functions;
@@ -47,8 +50,14 @@ public class Layer implements Serializable{
         for(int i = 0; i < neuron_next_number; i++){
             //we pass all calculated neuron values for softmax and functions like that (they calculate average/sum...)
             neurons_next[i].setNeuron_value(new_neuron_next_values[i], new_neuron_next_values);
-            if(neurons_next[i].neuron_value > 1000 || neurons_next[i].neuron_value < -1000 || neurons_next[i].neuron_value_output > 1000 || neurons_next[i].neuron_value_output< -1000 || (neurons_next[i].neuron_value_output < 0.0005 && neurons_next[i].neuron_value_output > 0) || (neurons_next[i].neuron_value < 0.0005 && neurons_next[i].neuron_value >0)){
-                System.out.println("neuron values to big or to low!!");
+            if(neurons_next[i].neuron_value > 1000 || neurons_next[i].neuron_value < -1000 || neurons_next[i].neuron_value_output > 1000 || neurons_next[i].neuron_value_output< -1000 ){
+                //System.out.println("neuron values to big!!");
+            }
+            if((neurons_next[i].neuron_value_output < 0.0005 && neurons_next[i].neuron_value_output > 0) || (neurons_next[i].neuron_value < 0.0005 && neurons_next[i].neuron_value >0)){
+                //System.out.println("neuron values to low!! POSITIVE");
+            }
+            if((neurons_next[i].neuron_value_output > -0.0001 && neurons_next[i].neuron_value_output < 0) || (neurons_next[i].neuron_value > -0.0001 && neurons_next[i].neuron_value < 0)){
+                //System.out.println("neuron values to low!! NEGATIVE");
             }
 
         }
@@ -56,26 +65,30 @@ public class Layer implements Serializable{
     }
 
 
-    public void calculateDeltas(){
+    public void calculateDeltas(double batch_size){
         double[] neuron_values = getNeuron_values();
+
         if(last_layer){
             for (int i = 0;i < neuron_number;i++) {
-                neurons[i].delta = 0;
+
                 double da = neurons[i].getActivationDerivative(neuron_values);//output neuron on activationFunction
                 //output and correct layer have the same number of neurons
                 double dc = neurons[i].getCostDerivative(neurons_next[i].neuron_value);//activationFunction on cost
-                neurons[i].delta = da * dc;
+                neurons[i].delta += (da * dc)/batch_size; //we add to delta and don't reset it!! -> for batches
+
                 if (neurons[i].delta>1000 || neurons[i].delta<-1000){
                     System.out.println("as");
                 }
             }
         }else {
             for (int i = 0;i < neuron_number;i++) {
-                neurons[i].delta = 0;
+
                 double da = neurons[i].getActivationDerivative(neuron_values);// neuron on activationFunction
                 for (int k = 0; k < neurons_next.length; k++) {
                     neurons[i].delta += da * neurons[i].weights[k] * neurons_next[k].delta;
                 }
+
+
                 if (neurons[i].delta>1000|| neurons[i].delta<-1000){
                     System.out.println("as");
                 }
@@ -86,12 +99,16 @@ public class Layer implements Serializable{
 
     public void calculateWeightsBiases(double learn_rate){
         for (Neuron neuron : neurons) {
-            for (int i = 0; i < neurons_next.length; i++) {
-                neuron.weights[i] -= learn_rate * (neurons_next[i].delta * neuron.neuron_value);
-                neuron.bias -= learn_rate * neurons_next[i].delta;
-                if(neuron.bias>1000 || neuron.bias<-1000){
-                    System.out.println("a");
+            if(!last_layer){
+                for (int i = 0; i < neurons_next.length; i++) {
+                    neuron.weights[i] -= learn_rate * (neurons_next[i].delta * neuron.neuron_value_output);
+                    neurons_next[i].delta = 0; // resets delta after using it
                 }
+            }
+            neuron.bias -= learn_rate * neuron.delta;
+
+            if(neuron.bias>1000 || neuron.bias<-1000){
+                System.out.println("a");
             }
         }
     }
@@ -104,13 +121,13 @@ public class Layer implements Serializable{
 
     public void setUpNeurons(){
         for(int i = 0; i<neuron_number;i++){
-            neurons[i] = new Neuron(neuron_next_number);
+            neurons[i] = new Neuron(neuron_before_number, neuron_next_number);
             neurons[i].setFunctions(functions, last_layer);
         }
     }
     public void setUpNextNeurons(){
         for(int i = 0; i<neuron_next_number;i++){
-            neurons_next[i] = new Neuron(0);
+            neurons_next[i] = new Neuron(neuron_before_number,  0);
         }
     }
 

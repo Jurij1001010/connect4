@@ -17,7 +17,19 @@ public class Functions {
     public Neural_Network.Functions.Cost.Function costFunction;
     public Neural_Network.Functions.Cost.Derivative costDerivative;
 
-    public Functions(Function activationFunction, Neural_Network.Functions.Cost.Function costFunction){
+    public Functions(){
+        this.activationFunction = Neural_Network.Functions.Activation.Functions.tanHFunction;
+        this.activationDerivative = Derivatives.tanHDerivative;
+
+        this.activationFunctionO = Neural_Network.Functions.Activation.Functions.softMaxFunction;
+        this.activationDerivativeO = Derivatives.softMaxDerivative;
+
+        this.costFunction = Neural_Network.Functions.Cost.Functions.cceFunction;
+        this.costDerivative = Neural_Network.Functions.Cost.Derivatives.ccaDerivative;
+
+
+    }
+    public Functions(Function activationFunction, Function activationFunctionO, Neural_Network.Functions.Cost.Function costFunction){
         //System.out.println("Which activate function is this?"+(activationFunction== Neural_Network.Functions.Activation.Functions.ReLUFunction)+" "+Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.ReLUFunction));
         if(Objects.equals(activationFunction, Neural_Network.Functions.Activation.Functions.ReLUFunction)){
             this.activationFunction = activationFunction;
@@ -42,7 +54,7 @@ public class Functions {
         }else {
             System.out.println("Which activate function is this?"+(activationFunction== Neural_Network.Functions.Activation.Functions.ReLUFunction));
         }
-
+        setActivationO(activationFunctionO);
 
         if(Objects.equals(costFunction, Neural_Network.Functions.Cost.Functions.cceFunction)){
             this.costFunction = costFunction;
@@ -52,7 +64,10 @@ public class Functions {
             this.costFunction = Neural_Network.Functions.Cost.Functions.mseFunction;
             this.costDerivative = Neural_Network.Functions.Cost.Derivatives.mseDerivative;
         }
-
+        else if(Objects.equals(costFunction, Neural_Network.Functions.Cost.Functions.bceFunction)){
+            this.costFunction = Neural_Network.Functions.Cost.Functions.bceFunction;
+            this.costDerivative = Neural_Network.Functions.Cost.Derivatives.bcaDerivative;
+        }
         else{
             System.out.println("Which cost function is this?");
         }

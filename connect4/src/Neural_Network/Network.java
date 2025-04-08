@@ -19,17 +19,16 @@ public class Network implements Cloneable, Serializable {
 
     Neural_Network.Functions.Functions functions;
 
-    public double cost_of_previous_feed;
 
-    public Network(int[] neurons_numbers){
+    public Network(int[] neurons_numbers, Neural_Network.Functions.Functions functions){
         this.layer_number = neurons_numbers.length;
         this.input_neurons_number = neurons_numbers[0];
         this.hidden_layers_number = layer_number-2;
         this.output_neurons_number = neurons_numbers[layer_number-1];
         this.neurons_numbers = neurons_numbers;
 
-        functions = new Neural_Network.Functions.Functions(Functions.tanHFunction, Neural_Network.Functions.Cost.Functions.cceFunction);
-        functions.setActivationO(Functions.softMaxFunction);
+        this.functions = functions;
+
 
         layers = new Layer[2+hidden_layers_number];
         makeLayers();
@@ -51,39 +50,65 @@ public class Network implements Cloneable, Serializable {
     public void makeLayers(){
         //if there is 0 hidden layers we only need to set up input and output layers
 
-        layers[0] = new Layer(new Neuron[input_neurons_number], neurons_numbers[1], functions);
+        layers[0] = new Layer(0, new Neuron[input_neurons_number], neurons_numbers[1], functions);
         for (int i = 0; i< hidden_layers_number; i++){
-            layers[i+1] = new Layer(layers[i].neurons_next, neurons_numbers[i+2], functions);
+            layers[i+1] = new Layer(neurons_numbers[i], layers[i].neurons_next, neurons_numbers[i+2], functions);
         }
-        layers[layer_number-1] = new Layer(layers[layer_number-2].neurons_next, 0, functions); //set up output layer
+        layers[layer_number-1] = new Layer(neurons_numbers[layer_number-2], layers[layer_number-2].neurons_next, 0, functions); //set up output layer
 
         input_layer = layers[0];
         output_layer = layers[layers.length-1];
     }
 
+
     public double[] feedNetwork(double[] input_neuron_values){
         input_layer.setNeurons(input_neuron_values);
 
-        for (Layer layer : layers) {
-            if(layer==output_layer)break;
-            layer.calculateNextNeurons();
+        for (int i = 0; i<layer_number;i++) {
+            if(layers[i]==output_layer)break;
+            layers[i].calculateNextNeurons();
         }
         return output_layer.getNeuron_values_output();
     }
 
 
-    public void learnNetwork(double[] input_neuron_values, double[] correct_neuron_values){
+    public void learnNetwork(double[] input_neuron_values, double[] expected_neuron_values){
 
         //forward-propagation
         feedNetwork(input_neuron_values);
 
-        output_layer.setNextNeurons(correct_neuron_values);//set last neurons as correct values
-        cost_of_previous_feed = output_layer.calculateCost(correct_neuron_values);
+        output_layer.setNextNeurons(expected_neuron_values);//set last neurons as expected values
         //back-propagation
         for (int i = layer_number-1; i >= 0; i--){
-            layers[i].calculateDeltas();
-            if(layers[i]!=output_layer)layers[i].calculateWeightsBiases(learn_rate);
+            layers[i].calculateDeltas(1);
+            layers[i].calculateWeightsBiases(learn_rate);
         }
+    }
+
+    public double learnNetwork(double[][] input_neuron_values_batch, double[][] expected_neuron_values_batch){
+        double batch_size = input_neuron_values_batch.length;
+        double batch_cost = 0;
+
+        for (int i = 0; i < batch_size; i++) {
+            feedNetwork(input_neuron_values_batch[i]);//forward-propagation
+            output_layer.setNextNeurons(expected_neuron_values_batch[i]);//set last neurons as expected values
+            output_layer.calculateDeltas(batch_size);
+            batch_cost += output_layer.calculateCost(expected_neuron_values_batch[i]);
+        }
+        output_layer.calculateWeightsBiases(learn_rate);
+
+
+
+        //back-propagation
+        for (int i = layer_number-2; i >= 0; i--){
+            layers[i].calculateDeltas(1);
+            layers[i].calculateWeightsBiases(learn_rate);
+        }
+        return batch_cost/batch_size;
+    }
+
+    public double calculateCost(double[] expected_neuron_values) {
+        return output_layer.calculateCost(expected_neuron_values);
     }
 
     public void setLearn_rate(double learn_rate) {

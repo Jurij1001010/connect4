@@ -7,6 +7,7 @@ public class Functions {
 
     //from -1 to 1
     public static Function tanHFunction = new Function() {
+        final String name = "tanHFunction";
         @Override
         public double execute(double input) {
             double x_plus = Math.exp(input);
@@ -18,6 +19,8 @@ public class Functions {
             if(Double.isNaN(output)){
                 System.out.println("tanH function NaN");
             }
+
+            if(Double.isInfinite(input)) return 1;
             return output;
         }
 
@@ -30,6 +33,7 @@ public class Functions {
 
     //from 0 to 1
     public static Function sigmoidFunction = new Function() {
+        final String name = "sigmoidFunction";
         @Override
         public double execute(double input) {
             double output = 1/(1+Math.exp(-input));
@@ -48,6 +52,7 @@ public class Functions {
 
     //e average -> only for array
     public static Function softMaxFunction = new Function() {
+        final String name = "softMaxFunction";
         @Override
         public double execute(double input) {
             System.out.println("Wrong use of softMax function!");
@@ -69,6 +74,7 @@ public class Functions {
 
     //e average(more precise) -> only for array
     public static Function logSoftMaxFunction = new Function() {
+        final String name = "logSoftMaxFunction";
         @Override
         public double execute(double input) {
             System.out.println("Wrong use of logSoftMax function!");
@@ -88,6 +94,7 @@ public class Functions {
 
     //max(0, value)
     public static Function ReLUFunction = new Function() {
+        final String name = "ReLUFunction";
         @Override
         public double execute(double input) {
             return Math.max(0, input);
