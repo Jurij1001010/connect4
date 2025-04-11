@@ -3,6 +3,7 @@ package Neural_Network;
 import Neural_Network.Functions.Activation.Functions;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Network implements Cloneable, Serializable {
     public Layer input_layer;
@@ -73,7 +74,6 @@ public class Network implements Cloneable, Serializable {
 
 
     public void learnNetwork(double[] input_neuron_values, double[] expected_neuron_values){
-
         //forward-propagation
         feedNetwork(input_neuron_values);
 
@@ -85,12 +85,19 @@ public class Network implements Cloneable, Serializable {
         }
     }
 
-    public double learnNetwork(double[][] input_neuron_values_batch, double[][] expected_neuron_values_batch){
+    public double[] learnNetwork(double[][] input_neuron_values_batch, double[][] expected_neuron_values_batch){
         double batch_size = input_neuron_values_batch.length;
         double batch_cost = 0;
+        int count = 0;
 
         for (int i = 0; i < batch_size; i++) {
-            feedNetwork(input_neuron_values_batch[i]);//forward-propagation
+            double[] out = feedNetwork(input_neuron_values_batch[i]);
+            if(out[0]>out[1]){
+                if(expected_neuron_values_batch[i][0]==1)count++;
+            }else if(out[0]<out[1]){
+                if(expected_neuron_values_batch[i][0]==0)count++;
+            }
+            //System.out.println(Arrays.toString());//forward-propagation
             output_layer.setNextNeurons(expected_neuron_values_batch[i]);//set last neurons as expected values
             output_layer.calculateDeltas(batch_size);
             batch_cost += output_layer.calculateCost(expected_neuron_values_batch[i]);
@@ -104,7 +111,7 @@ public class Network implements Cloneable, Serializable {
             layers[i].calculateDeltas(1);
             layers[i].calculateWeightsBiases(learn_rate);
         }
-        return batch_cost/batch_size;
+        return new double[]{batch_cost/batch_size, count};
     }
 
     public double calculateCost(double[] expected_neuron_values) {

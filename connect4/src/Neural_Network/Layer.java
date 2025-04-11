@@ -70,11 +70,14 @@ public class Layer implements Serializable{
 
         if(last_layer){
             for (int i = 0;i < neuron_number;i++) {
-
+                /*
                 double da = neurons[i].getActivationDerivative(neuron_values);//output neuron on activationFunction
                 //output and correct layer have the same number of neurons
                 double dc = neurons[i].getCostDerivative(neurons_next[i].neuron_value);//activationFunction on cost
                 neurons[i].delta += (da * dc)/batch_size; //we add to delta and don't reset it!! -> for batches
+                 */
+                neurons[i].delta = neurons[i].neuron_value_output - neurons_next[i].neuron_value;
+
 
                 if (neurons[i].delta>1000 || neurons[i].delta<-1000){
                     System.out.println("as");
@@ -90,7 +93,7 @@ public class Layer implements Serializable{
 
 
                 if (neurons[i].delta>1000|| neurons[i].delta<-1000){
-                    System.out.println("as");
+                    //System.out.println("as");
                 }
             }
         }
@@ -102,14 +105,15 @@ public class Layer implements Serializable{
             if(!last_layer){
                 for (int i = 0; i < neurons_next.length; i++) {
                     neuron.weights[i] -= learn_rate * (neurons_next[i].delta * neuron.neuron_value_output);
-                    neurons_next[i].delta = 0; // resets delta after using it
                 }
             }
             neuron.bias -= learn_rate * neuron.delta;
-
             if(neuron.bias>1000 || neuron.bias<-1000){
-                System.out.println("a");
+                //System.out.println("a");
             }
+        }
+        for(Neuron neuron_next : neurons_next){
+            neuron_next.delta = 0; // resets delta after using it
         }
     }
     public double calculateCost(double[] expected_values){

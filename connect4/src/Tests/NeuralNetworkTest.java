@@ -9,15 +9,15 @@ import java.util.Random;
 public class NeuralNetworkTest {
 
     private static final Random rand = new Random();
-    private static Neural_Network.Functions.Functions functions = new Neural_Network.Functions.Functions(Functions.tanHFunction, Functions.softMaxFunction, Neural_Network.Functions.Cost.Functions.cceFunction);
-    public static Network n = new Network(new int[]{2,4,4,2}, functions);
+    private static Neural_Network.Functions.Functions functions = new Neural_Network.Functions.Functions(Functions.tanHFunction, Functions.softMaxFunction, Neural_Network.Functions.Cost.Functions.cceFunction );
+    public static Network n = new Network(new int[]{2,5,5,5,2}, functions);
 
 
     public static void main(String[] args) {
 
-        n.setLearn_rate(0.01);
+        n.setLearn_rate(0.03);
 
-        DataSet data_set = new DataSet(100, 2, 2, 10);
+        DataSet data_set = new DataSet(1000, 2, 2, 100);
 
         /*
         learnOnOneExample(5, 6, 100);
@@ -26,7 +26,7 @@ public class NeuralNetworkTest {
         testOnOneExample(5, 6);*/
         test(10, data_set);
         System.out.println();
-        learn(10000, data_set);
+        learn(800000, data_set);
         System.out.println();
         test(10, data_set);
 
@@ -39,18 +39,12 @@ public class NeuralNetworkTest {
         //define learn grid
 
         for (int i = 0; i < number_of_epoch; i++) {
-            /*
-            double x = data_set[j][0];
-            double y = data_set[j][1];
-            */
-            //double[] onFx = fx(x, y);
-            //System.out.println(Arrays.toString(onFx)+" "+(onFx[0]==1?"true":"false"));
-            //System.out.println(x+" "+ Arrays.toString(onFx));
-            //System.out.println("learning: "+x+" "+y+"  means: "+ Arrays.toString(onFx));
+            //System.out.println("Epoch: "+i);
+
             data_set.setRandomBatch();
-            double cost = n.learnNetwork(data_set.batch_data, data_set.batch_results);
+            double[] cost = n.learnNetwork(data_set.batch_data, data_set.batch_results);
             if(i%100==0) {
-                System.out.println(i+" "+cost);
+                System.out.println(i+" "+cost[0]+" "+cost[1]);
             }
         }
 
